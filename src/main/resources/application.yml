@@ -1,0 +1,5 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://ricardooamaro:DSW3MEpgGElPWraA@cluster0.adsrmpi.mongodb.net/?retryWrites=true&w=majority
+      database: faturadb
