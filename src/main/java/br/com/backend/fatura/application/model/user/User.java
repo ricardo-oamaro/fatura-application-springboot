@@ -1,6 +1,6 @@
 package br.com.backend.fatura.application.model.user;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,11 +22,25 @@ public class User implements UserDetails {
 
     @Id
     private ObjectId id;
+
+    @NotNull(message = "O nome não pode ser nulo")
+    @NotBlank(message = "O nome não pode ser vazio")
+    @Size(min = 3, max = 30, message = "O campo deve ter entre 3 e 30 caracteres")
+    private String name;
+
+    @NotNull(message = "O email não pode ser nulo")
+    @NotBlank(message = "O email não pode ser vazio")
+    @Email(message = "Por favor, forneça um endereço de e-mail válido")
     private String email;
+
+    @NotNull(message = "A senha não pode ser nulo")
+    @NotBlank(message = "A senha não pode ser vazio")
     private String password;
+
     private UserRole role;
 
-    public User(String email, String password, UserRole role) {
+    public User(String name, String email, String password, UserRole role) {
+        this.name = name;
         this.email = email;
         this.password = password;
         this.role = role;

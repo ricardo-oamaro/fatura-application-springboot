@@ -2,7 +2,6 @@ package br.com.backend.fatura.application.controller;
 
 import br.com.backend.fatura.application.model.user.AuthenticationDTO;
 import br.com.backend.fatura.application.model.user.LoginResponseDTO;
-import br.com.backend.fatura.application.model.user.RegisterDTO;
 import br.com.backend.fatura.application.model.user.User;
 import br.com.backend.fatura.application.repo.UserRepository;
 import br.com.backend.fatura.application.service.TokenService;
@@ -39,15 +38,15 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody @Valid RegisterDTO data){
-        if(this.userRepository.findByEmail(data.email()) != null) return ResponseEntity.badRequest().build();
+    public ResponseEntity<?> register(@Valid @RequestBody User data){
+        if(this.userRepository.findByEmail(data.getEmail()) != null) return ResponseEntity.badRequest().body("Bad request.");
 
-        String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
-        User newUser = new User(data.email(), encryptedPassword, data.role());
+        String encryptedPassword = new BCryptPasswordEncoder().encode(data.getPassword());
+        User newUser = new User(data.getName(), data.getEmail(), encryptedPassword, data.getRole());
 
         this.userRepository.save(newUser);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body("Usuario criado com sucesso!!!");
 
     }
 
