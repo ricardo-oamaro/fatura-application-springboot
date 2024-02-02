@@ -37,12 +37,17 @@ public class User implements UserDetails {
     @NotBlank(message = "A senha não pode ser vazio")
     private String password;
 
+    @NotNull(message = "A senha não pode ser nulo")
+    @NotBlank(message = "Confirme a senha")
+    private String confirmPassword;
+
     private UserRole role;
 
-    public User(String name, String email, String password, UserRole role) {
+    public User(String name, String email, String password, String confirmPassword, UserRole role) {
         this.name = name;
         this.email = email;
         this.password = password;
+        this.confirmPassword = confirmPassword;
         this.role = role;
     }
 

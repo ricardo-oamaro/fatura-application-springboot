@@ -6,6 +6,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +16,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+
+@Slf4j
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
 
@@ -40,21 +43,23 @@ public class SecurityFilter extends OncePerRequestFilter {
                         var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                         SecurityContextHolder.getContext().setAuthentication(authentication);
                     } else {
-                        sendErrorResponse(response, "Usuário não encontrado");
+                        log.error(Constrants.USER_NOT_FOUND);
+                        sendErrorResponse(response, Constrants.USER_NOT_FOUND);
                         return;
                     }
                 } else {
-                    logger.error("Usuário não logado, por favor faça o login");
-                    sendErrorResponse(response, "Usuário não logado, por favor faça o login");
+                    log.error(Constrants.LOGIN_ERROR);
+                    sendErrorResponse(response, Constrants.LOGIN_ERROR);
                     return;
                 }
 
             } else {
-                sendErrorResponse(response, "Token não fornecido");
+                log.error(Constrants.TOKEN_NOT_PROVIDED);
+                sendErrorResponse(response, Constrants.TOKEN_NOT_PROVIDED);
                 return;
             }
         } catch (Exception e) {
-            logger.error("Erro ao processar a requisição", e);
+            logger.error(Constrants.REQUEST_ERROR, e);
         }
         filterChain.doFilter(request, response);
     }
