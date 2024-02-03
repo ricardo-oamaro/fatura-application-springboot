@@ -1,6 +1,10 @@
 package br.com.backend.fatura.application.model.user;
 
-import jakarta.validation.constraints.*;
+import br.com.backend.fatura.application.infra.validation.ValidPassword;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +18,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+@ValidPassword(
+        password = "password",
+        confirmPassword = "confirmPassword"
+)
 @AllArgsConstructor
 @NoArgsConstructor
 @Data

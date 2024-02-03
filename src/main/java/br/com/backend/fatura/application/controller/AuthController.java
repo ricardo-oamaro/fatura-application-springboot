@@ -8,11 +8,13 @@ import br.com.backend.fatura.application.repo.UserRepository;
 import br.com.backend.fatura.application.service.TokenService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,12 +43,20 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody User data){
+    public ResponseEntity<?> register(@Valid @RequestBody User data, BindingResult bindingResult){
         try {
             if(this.userRepository.findByEmail(data.getEmail()) != null) {
                 log.error(Constrants.USER_ALREADY_EXISTS);
                 return ResponseEntity.badRequest().body(Constrants.USER_ALREADY_EXISTS);
             }
+            if(bindingResult.hasErrors()){
+                String errorMessage = bindingResult.getAllErrors().get(0).getDefaultMessage();
+                JSONObject jsonResponse = new JSONObject();
+
+                log.error(Constrants.PASSWORDS_DO_NOT_MATCH + " - " + errorMessage);
+                return ResponseEntity.badRequest().body(jsonResponse.put("error", errorMessage).toString());
+            }
+
             data.setPassword(new BCryptPasswordEncoder().encode(data.getPassword()));
             userRepository.save(data);
             log.info(Constrants.USER_CREATED);
