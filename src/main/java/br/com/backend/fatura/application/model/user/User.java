@@ -1,6 +1,8 @@
 package br.com.backend.fatura.application.model.user;
 
 import br.com.backend.fatura.application.infra.validation.ValidPassword;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -29,6 +31,7 @@ import java.util.List;
 public class User implements UserDetails {
 
     @Id
+    @JsonSerialize(using = ToStringSerializer.class)
     private ObjectId id;
 
     @NotNull(message = "O nome não pode ser nulo")

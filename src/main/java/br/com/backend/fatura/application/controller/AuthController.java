@@ -17,6 +17,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("auth")
 @Slf4j
@@ -53,13 +55,22 @@ public class AuthController {
                 JSONObject jsonResponse = new JSONObject();
 
                 log.error(Constrants.PASSWORDS_DO_NOT_MATCH + " - " + errorMessage);
-                return ResponseEntity.badRequest().body(jsonResponse.put("error", errorMessage).toString());
+                return ResponseEntity.badRequest().body(jsonResponse.put("errors", errorMessage).toString());
             }
 
+            String token = tokenService.generateToken(data);
+
             data.setPassword(new BCryptPasswordEncoder().encode(data.getPassword()));
-            userRepository.save(data);
+            User newUser = userRepository.save(data);
+            String userId = newUser.getId().toHexString();
             log.info(Constrants.USER_CREATED);
-            return ResponseEntity.ok().body(Constrants.USER_CREATED);
+            return ResponseEntity.ok()
+                    .body(
+                            Map.of(
+                                    "_id", userId,
+                                    "token", token
+                            )
+                    );
 
         } catch (Exception e) {
             log.error(e.getMessage());
