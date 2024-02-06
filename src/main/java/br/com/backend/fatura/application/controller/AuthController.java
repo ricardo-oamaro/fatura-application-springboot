@@ -17,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -48,7 +49,9 @@ public class AuthController {
         try {
             if(this.userRepository.findByEmail(data.getEmail()) != null) {
                 log.error(Constrants.USER_ALREADY_EXISTS);
-                return ResponseEntity.badRequest().body(Constrants.USER_ALREADY_EXISTS);
+                Map<String, Object> responseBody = new HashMap<>();
+                responseBody.put("error", Constrants.USER_ALREADY_EXISTS);
+                return ResponseEntity.badRequest().body(responseBody);
             }
             if(bindingResult.hasErrors()){
                 String errorMessage = bindingResult.getAllErrors().get(0).getDefaultMessage();
@@ -64,13 +67,16 @@ public class AuthController {
             User newUser = userRepository.save(data);
             String userId = newUser.getId().toHexString();
             log.info(Constrants.USER_CREATED);
-            return ResponseEntity.ok()
-                    .body(
-                            Map.of(
-                                    "_id", userId,
-                                    "token", token
-                            )
-                    );
+            Map<String, Object> responseBody = new HashMap<>();
+            responseBody.put("message", Constrants.USER_CREATED);
+            return ResponseEntity.ok().body(responseBody);
+//            return ResponseEntity.ok()
+//                    .body(
+//                            Map.of(
+//                                    "_id", userId,
+//                                    "token", token
+//                            )
+//                    );
 
         } catch (Exception e) {
             log.error(e.getMessage());
