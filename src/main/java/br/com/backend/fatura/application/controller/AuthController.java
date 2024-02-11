@@ -7,6 +7,7 @@ import br.com.backend.fatura.application.repo.UserRepository;
 import br.com.backend.fatura.application.service.TokenService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +35,9 @@ public class AuthController {
     TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data, BindingResult bindingResult) {
+    public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data, BindingResult bindingResult) throws JSONException {
+
+        JSONObject jsonResponse = new JSONObject();
         try {
             var authentication = new UsernamePasswordAuthenticationToken(data.getEmail(), data.getPassword());
             Map<String, Object > responseBody = new HashMap<>();
@@ -51,8 +54,6 @@ public class AuthController {
             }
             if(bindingResult.hasErrors()){
                 String errorMessage = bindingResult.getAllErrors().get(0).getDefaultMessage();
-                JSONObject jsonResponse = new JSONObject();
-
                 log.error(Constrants.WRONG_PASSWORD + " - " + errorMessage);
                 return ResponseEntity.badRequest().body(jsonResponse.put(Constrants.ERROR_MESSAGE, errorMessage).toString());
             }
@@ -70,8 +71,10 @@ public class AuthController {
                     );
 
         } catch (Exception e) {
-            log.error(e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
+            log.error("cai aqui" +  e.getMessage());
+            return ResponseEntity.badRequest().body(
+                    jsonResponse.put(Constrants.ERROR_MESSAGE, e.getMessage()).toString()
+            );
         }
 
     }
