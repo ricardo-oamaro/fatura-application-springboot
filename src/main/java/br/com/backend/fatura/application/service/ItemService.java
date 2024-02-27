@@ -4,6 +4,7 @@ import br.com.backend.fatura.application.model.item.Item;
 import br.com.backend.fatura.application.repo.ItemRepository;
 import br.com.backend.fatura.application.service.implementation.ItemServiceInterface;
 import edu.umd.cs.findbugs.classfile.ResourceNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@Slf4j
 public class ItemService implements ItemServiceInterface {
 
     @Autowired
@@ -23,6 +25,7 @@ public class ItemService implements ItemServiceInterface {
 
     @Override
     public Item addItem(Item item) {
+        log.info("Item adicionado: " + item);
         return itemRepository.save(item);
     }
 
@@ -31,19 +34,24 @@ public class ItemService implements ItemServiceInterface {
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
         itemRepository.delete(item);
+        log.info("Item deletado: " + item);
         return item;
     }
 
     @Override
-    public Item updateItem(ObjectId id, Item item) throws ResourceNotFoundException {
-        Item itemVar = itemRepository.findById(id)
+    public Item updateItem(ObjectId id, Item newItem) throws ResourceNotFoundException {
+        Item existingItem = itemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
-        itemVar.setDate(itemVar.getDate());
-        itemVar.setDescription(itemVar.getDescription());
-        itemVar.setDate(itemVar.getDate());
 
-        itemRepository.save(item);
+        existingItem.setDate(newItem.getDate());
+        existingItem.setDescription(newItem.getDescription());
+        existingItem.setValue(newItem.getValue());
 
-        return itemVar;
+        Item updatedItem = itemRepository.save(existingItem);
+
+        log.info("Item atualizado de: " + existingItem);
+        log.info("Item atualizado para: " + updatedItem);
+
+        return updatedItem;
     }
 }
