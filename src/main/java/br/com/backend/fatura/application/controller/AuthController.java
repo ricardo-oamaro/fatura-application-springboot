@@ -60,12 +60,14 @@ public class AuthController {
             var auth = authenticationManager.authenticate(authentication);
             var token = tokenService.generateToken(user);
             String userId = user.getId().toHexString();
+            String name = user.getName();
             log.info(Constrants.LOGIN_SUCCESS);
             responseBody.put(Constrants.MESSAGE, Constrants.LOGIN_SUCCESS);
             return ResponseEntity.ok()
                     .body(
                             Map.of(
                                     "_id", userId,
+                                    "name", name,
                                     "token", token
                             )
                     );
