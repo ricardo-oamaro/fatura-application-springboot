@@ -9,6 +9,9 @@ import java.util.List;
 public interface ItemServiceInterface {
 
     public List<Item> getItems();
+
+    public double getTotalPrice();
+
     public Item addItem(Item item);
 
     public Item deleteItem(ObjectId id ) throws ResourceNotFoundException;

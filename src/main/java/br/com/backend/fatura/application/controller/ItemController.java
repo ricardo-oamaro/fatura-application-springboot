@@ -21,6 +21,11 @@ public class ItemController {
         return itemService.getItems();
     }
 
+    @GetMapping("/total-price")
+    public double getTotalPrice() {
+        return itemService.getTotalPrice();
+    }
+
     @PostMapping("/insert")
     public Item insert(@RequestBody Item item) {
         return itemService.addItem(item);

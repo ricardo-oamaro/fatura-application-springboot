@@ -23,6 +23,17 @@ public class ItemService implements ItemServiceInterface {
         return itemRepository.findAll();
     }
 
+    public double getTotalPrice() {
+        List<Item> items = itemRepository.findAll();
+        double totalPrice = 0.0;
+
+        for (Item item : items) {
+            totalPrice += item.getValue();
+        }
+
+        return totalPrice;
+    }
+
     @Override
     public Item addItem(Item item) {
         log.info("Item adicionado: " + item);
