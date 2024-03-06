@@ -9,7 +9,9 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -23,7 +25,7 @@ public class ItemService implements ItemServiceInterface {
         return itemRepository.findAll();
     }
 
-    public double getTotalPrice() {
+    public Map<String, Object> getTotalPriceAndItems() {
         List<Item> items = itemRepository.findAll();
         double totalPrice = 0.0;
 
@@ -31,7 +33,11 @@ public class ItemService implements ItemServiceInterface {
             totalPrice += item.getValue();
         }
 
-        return totalPrice;
+        Map<String, Object> result = new HashMap<>();
+        result.put("data", items);
+        result.put("soma", totalPrice);
+
+        return result;
     }
 
     @Override

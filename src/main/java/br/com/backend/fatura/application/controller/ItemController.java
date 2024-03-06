@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/items")
@@ -21,9 +22,10 @@ public class ItemController {
         return itemService.getItems();
     }
 
-    @GetMapping("/total-price")
-    public double getTotalPrice() {
-        return itemService.getTotalPrice();
+    @GetMapping("/total-price-and-items")
+    @ResponseBody
+    public Map<String, Object> getTotalPriceAndItems() {
+        return itemService.getTotalPriceAndItems();
     }
 
     @PostMapping("/insert")

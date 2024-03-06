@@ -5,12 +5,13 @@ import edu.umd.cs.findbugs.classfile.ResourceNotFoundException;
 import org.bson.types.ObjectId;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ItemServiceInterface {
 
     public List<Item> getItems();
 
-    public double getTotalPrice();
+    public Map<String, Object> getTotalPriceAndItems();
 
     public Item addItem(Item item);
 
